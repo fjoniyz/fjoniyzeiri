@@ -2,7 +2,7 @@
 <html>
     <head>
         <title>Fjoni Yzeiri</title>
-        <link rel="stylesheet" href="style.css">
+        <link rel="stylesheet" href="../style.css">
          <!-- Bootstrap CSS -->
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
         <!-- jQuery -->
@@ -12,18 +12,19 @@
     </head>
     <h1>Fjoni Yzeiri</h1>
     <ul class="bar">
-        <li><a href="index.html" class="element"><b>Home</b></a></li>
-        <li><a href="posts.html" class="element"><b>Posts</b></a></li>
+        <li><a href="../index.html" class="element"><b>Home</b></a></li>
+        <li><a href="../posts.html" class="element"><b>Posts</b></a></li>
     </ul>
     <h2 style="text-align: center;">Database internals</h2>
 <div class="post-content">
+<h2>Basic concepts</h2>
 <p>Many times when starting with databases one may ask the question, where the whole database is stored. The simple answer would be, in the disk and that answer would be correct, the art behind it, has to do with the way the data is stored in the disk as there are multiple ways to do that. But before we jump into the way the data is stored in the disk let's clarify some definitions.</p>
-<p>IO: input/output operation. We try to minimize this as much as possible since this slows down our query when multiple IO operations are being done. An IO cannot read a single row, it reads a page(what a page is, is explained below). For this reason we try to minimize it. That is the reason why star operations(SELECT * FROM Students) is so slow. As a query it does so many IO operations, that in some cases it may also take a couple of seconds to complete the query. One needs to be careful when talking about IO because an IO does not always read from the disk but it can also read from the cache instead.</p>
-<p>Page: a page is just a fixed size memory location of a bunch of bytes(in PostgreSQL the size is 8kb and in mySQL it's 16kb). Inside a page one can put the rows. Now the question that pops up is, how many? And the answer for that is crystal clear, it depends. It depends on the size of the row, size of the page, size of the data types, etc.</p>
+<p><b>IO</b>: input/output operation. We try to minimize this as much as possible since this slows down our query when multiple IO operations are being done. An IO cannot read a single row, it reads a page(what a page is, is explained below). For this reason we try to minimize it. That is the reason why star operations(SELECT * FROM Students) is so slow. As a query it does so many IO operations, that in some cases it may also take a couple of seconds to complete the query. One needs to be careful when talking about IO because an IO does not always read from the disk but it can also read from the cache instead.</p>
+<p><b>Page</b>: a page is just a fixed size memory location of a bunch of bytes(in PostgreSQL the size is 8kb and in mySQL it's 16kb). Inside a page one can put the rows. Now the question that pops up is, how many? And the answer for that is crystal clear, it depends. It depends on the size of the row, size of the page, size of the data types, etc.</p>
 <p>This way of thinking and storing data in the disk, influences the way how a query in itself works. When you read from the disk, you don't read, for example, a single row in this case. You read a page. So we retrieve many rows and we choose.</p>
 <p>Why is this important? Well this plays a huge part in the speed of a query. One needs to understand how many pages are being pulled, how much information needs to be retrieved in order to get the info that we want. After getting the page the DB in itself does the unmarshalling of the bytes to filter out the information that it needs. This marshalling/unmarshalling costs.</p>
-<p>Heap: data structure where all the tables are being stored with all the pages one after another. Traversing it is very expensive, that's why one needs to use the indexes of the heap and tell which page needs to be fetched and read from(if that's possible).</p>
-<p>Index: another data structure that is separated from the heap which has pointers to the heap. This is one of the most useful concepts when it comes to databases. An index can make a query be wayyy faster but it also costs memory so one needs to be cautious about what one uses as an index. We can index on one column or more, and the index tells exactly which page to fetch in the heap. The smaller the index, the faster the search because it saves up memory. Index in itself is also stored as pages and it also costs IO to pull from the index, but still we save so many IO operations when we pull from the index because it tells us where to do the other IO operation when pulling from the heap. Index is also stored as a B-Tree in the system. This makes traversing it quite fast in comparison to just saving the entries of the index sequentially (O(log n) instead of O(n)).</p>
+<p><b>Heap</b>: data structure where all the tables are being stored with all the pages one after another. Traversing it is very expensive, that's why one needs to use the indexes of the heap and tell which page needs to be fetched and read from(if that's possible).</p>
+<p><b>Index</b>: another data structure that is separated from the heap which has pointers to the heap. This is one of the most useful concepts when it comes to databases. An index can make a query be wayyy faster but it also costs memory so one needs to be cautious about what one uses as an index. We can index on one column or more, and the index tells exactly which page to fetch in the heap. The smaller the index, the faster the search because it saves up memory. Index in itself is also stored as pages and it also costs IO to pull from the index, but still we save so many IO operations when we pull from the index because it tells us where to do the other IO operation when pulling from the heap. Index is also stored as a B-Tree in the system. This makes traversing it quite fast in comparison to just saving the entries of the index sequentially (O(log n) instead of O(n)).</p>
 <p>Now that we got that out of the way let's go on with the real “How” when it comes to storing a database in the system. There are 2 different ways of how we can store the database information in the disk. We can either store it as a row-oriented database or as a column-oriented database.</p>
 <h2>Row-oriented database</h2>
 <p>The tables are stored as rows in the disk as the name already suggests. But what does this mean? What does this say? This means that when we want to find a particular information about a specific row, we get all the columns that correspond to that row. The fact that we get the whole information that corresponds to the row may be a good or a bad thing, depending on the information that we're looking for.</p>
