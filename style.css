@@ -1,0 +1,59 @@
+li {
+    display: inline;
+    margin: 100px;
+}
+
+.post {
+    display: block;
+    font-size: larger;
+}
+
+.posts {
+    text-align: center;
+}
+
+.post-content {
+    margin: 50px;
+}
+
+.bar{
+    text-align: center;
+    padding-bottom: 15px;
+}
+
+.element {
+    margin-top: 10px;
+}
+
+.contact {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+hr {
+    background-color: darkgrey;
+}
+
+li a:hover {
+    text-decoration: none;
+}
+
+.contacts {
+    text-align: center;
+    padding-top: 50px;
+}
+
+.resume {
+    padding-left: 10%;
+}
+
+h1 {
+    padding-top: 20px;
+    padding-bottom: 35px;
+    text-align: center;
+}
+
+h2 {
+    padding-top: 20px;
+    padding-bottom: 20px;
+}

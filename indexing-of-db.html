@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fjoni Yzeiri</title>
+        <link rel="stylesheet" href="style.css">
+         <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    </head>
+    <h1>Fjoni Yzeiri</h1>
+    <ul class="bar">
+        <li><a href="index.html" class="element"><b>Home</b></a></li>
+        <li><a href="posts.html" class="element"><b>Posts</b></a></li>
+    </ul>
+    <h2 style="text-align: center;">Indexing of databases: a brief overview and introduction</h2>
+<div class="post-content">
+    <h2>What is indexing?</h2>
+    <p>Organizing your data in the table in order to fetch it from the database in a more efficient way.</p>
+    <h2>How is it done?</h2>
+    <p>We need to call indexing on a certain column of the table, then a B-Tree is created based on it. This makes it possible for the search of the required value to be made in O(log n). So for example if we have a table with integer values and we index on them, a B-Tree will be created based on this index and then, when we need a certain value, the B-tree “knows” in which direction to check before starting the iteration and looking through the tree.</p>
+    <p>The question that gets raised here is, what if I need something else based on that value? For example, what if I create an index based on age, but I need the name of the person corresponding to that age? That is where it gets interesting.</p>
+    <p>So until now, we know that indexing functions like a phone book so to say. We want something from the table and we look it up, we retrieve it after a couple of milliseconds. If we didn't have indexing, the database would do a sequential scan. <em><b>A sequential scan</b></em> is nothing more than just a simple lookup through the whole table where the database just looks and checks every value whether it matches the value wanted or not. In the case that we have an index, we may have 2 different scans. One of them is the index scan. <em><b>Index scan</b></em> means that the database used the B-Tree of the indexing and also the table. In our earlier example we were looking for a certain person's name with a certain age. Since we did indexing only on the age, we need to look up in the table what this person's name actually is. This is what index scanning is. But let's say that we have the name in the index too. In that case the lookup would be way faster than in the index scan because we do not need to look up the table for the person's name. We just have a look in the B-Tree and bam! The other way of scanning is called <em><b>bitmap index scan</b></em>. From the name we can already tell that it is a bitmap(which is in itself nothing more than an array of 0s and 1s). The length of the bitmap is determined by the number of pages that we have. In an index scan, we used to check the table for each value that we found which corresponds the query that was put in by the user, in the bitmap index scan, we check the whole indexing for the rows that may satisfy our condition, take a note of the page where they are and we jump on the heap and look up the page. Each page is going to have multiple rows in it, so postgres filters out the rows that fulfill the condition in the respective page.</p>
+    <p>A clever technique employed by PostgreSQL during bitmap index scanning is when dealing with a composite query. For example, we need the names of people whose age is greater than 25 and also whose ID is greater than 100. In that case there are 2 different bitmap scans that are being executed, one for each of the conditions that were mentioned in the query and after that, postgres ANDs them both. This way when we do an AND comparing each of the entries in the bitmap we can get all the entries where both of the conditions are true(just like we do when we create an if else statement).</p>
+    <p>In conclusion, indexing is a powerful tool that is being used in almost each and every big project in order to make the softwares more efficient, faster and to use less resources. We had a brief look into the logic of indexing and also how different scans work but there is of course, still more to cover.</p>
+</div>
+</html>
