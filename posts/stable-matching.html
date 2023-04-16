@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fjoni Yzeiri</title>
+        <link rel="stylesheet" href="../style.css">
+         <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+        <!-- Bootstrap JS -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+        <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+        <script>
+            MathJax = {
+              tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']]
+              }
+            };
+            </script>
+        <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    </head>
+    <h1>Fjoni Yzeiri</h1>
+    <ul class="bar">
+        <li><a href="../index.html" class="element"><b>Home</b></a></li>
+        <li><a href="../posts.html" class="element"><b>Posts</b></a></li>
+    </ul>
+    <h2 style="text-align: center;">Stable matching</h2>
+<div class="post-content">
+    <p>Today I'll try to explain and prove the characteristics of one of the fundamental algorithms of theoretical computer science, an algorithm that is one of the first ones that gets explained in every algorithm class during a computer science degree. This algorithm is called the stable marriage problem.</p>
+<p>According to Wikipedia's article about the algorithm, the main idea is to find a stable matching between two equally sized sets of elements given that each element of each set has an order of preferences for the elements of the other set. The first thing that we are going to address here is the word “stable”. In this context, stable means that there is no other matching of elements with one another that is better for some arbitrary element of the first set. That means that there is no pair of elements $(X,Y)$ which both prefer each other over their current partner in the matching.</p>
+<p>Let's take a look at an example to understand it better. Let's say we have two different sets $F: \{A,B,C\}$ and $G: \{X,Y,Z\}$ with preferences of elements that go like this:</p>
+<p>Preferences of the elements from the first set: $\{A:YXZ, B:ZYX, C:XZY\}$<br />Preferences of the elements of the second set: $\{X:BAC, Y: CBA, Z: ACB\}$</p>
+<p>There is always a set of elements which makes the proposals and another set which accepts the proposals(or rejects them). Let's say that the elements from $F$ make the proposals and the elements from G accept them. In this case the matching would be $(A, Y)$, (B, Z) and (C,X). This is the best possible result for the elements from $F$ since they all get their first choice, but for the elements from G this is the worst possible outcome. Even if we do it the other way around, we get another result, but this time this result would be the worst possible outcome for the elements of $F$, and the outcome for the elements of G.</p>
+<p>Now what if we had another matching, let's say $(A,X)$, $(B, Z)$ and $(C,Y)$ would this be stable? According to the definition no, because the other matching $(A, Y)$, $(B, Z)$ and $(C,X)$ would be better for $A$ and for $C$.</p>
+<h2>Applications</h2>
+<p>The algorithm is quite useful in computer science but it is also used a lot in economics and mathematics too. In fact, the ones who discovered it in 1962 were Dave Gale and Lloyd Shapley, both of them were mathematicians and economists. The algorithm in itself finds use in different areas of life where we need to assign people to different institutions or groups. For example, in universities it is used to choose the students who get accepted in different courses with limited places, in medicine it is used as well and when it comes to computer science, we use it to assign users to servers in a large-distributed internet service.</p>
+<h2>Gale-Shapley Algorithm</h2>
+<p>Let there be two sets $M=\{m_1, m_2, …, m_n\}$ and $W=\{w_1, w_2,...,w_n\}$. The algorithm is based on rounds and it goes like this:<br>
+Each element of $M$ proposes to the element of $W$ which it prefers most. The elements which receive the proposal reply with “maybe” to the candidate they prefer the most and with “no” to the others. In the next rounds, the elements from $M$ which do not have an assigned element from $W$, propose to the next element which they haven't proposed to, in the list of their preferences. On the other side, the element from $W$ which receives the proposal responds with “maybe” if it doesn't have an element assigned to it until now, and in the case that it prefers the new element over the one it is already matched to, it trades them. This goes on until all of the elements have an assignee.</p>
+<p>This is also called the “Propose &amp; Reject” algorithm due to its nature that elements can reject and accept other elements of the other set, depending on their preference. Now we'll prove that the algorithm produces a stable and perfect matching in each case.</p>
+<h3>Proof for perfect matching</h3>
+<p>We're going to use proof by contradiction. Let the assumption be that the algorithm leaves an element $w \in W$ free. We already know that the size of $M$ and $W$ are equal, this means that there must also be another $m \in M$ which is free. In this case m would have already made a proposal to w thus w wouldn't be free anymore which contradicts our assumption.</p>
+<h3>Proof of stability</h3>
+<p>We'll still use proof by contradiction. Let the assumption be that the algorithm produces two pairs $(m,w)$ and $(m', w')$ such that, $m$ and $w'$ would prefer one another over their respective partners. According to the algorithm, $m$ has proposed first to $w'$ but $w'$ has either refused or replaced it. We also know that after the first matching of elements from $W$ with another element from $M$, the elements from $W$ can only have a better matching. Therefore $w'$ would have been assigned to another partner, which it likes better than $m$. This is a contradiction to what we assumed in the beginning.</p>
+</div>
+</html>
